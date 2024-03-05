@@ -6,9 +6,7 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('insurers')
 @ApiTags('insurers')
 export class InsurersController {
-    constructor(private readonly insurerService: InsurersService,) {
-
-    }
+    constructor(private readonly insurerService: InsurersService,) { }
 
     @Get('all')
     findAllInsurers() {
@@ -22,12 +20,10 @@ export class InsurersController {
 
     @Post()
     create(@Body(new ValidationPipe({transform: true})) dto: CreateInsurerDto) {
-        console.log('DTO received:', dto);
         return this.insurerService.create(dto);
     }
-    
 
-    @Put(':id')
+    @Put('update/:id')
     update(
         @Param('id') id: string,
         @Body() updateInsurersDto: UpdateInsurerDto,
@@ -35,7 +31,7 @@ export class InsurersController {
         return this.insurerService.update(updateInsurersDto, id);
     }
 
-    @Delete(':id')
+    @Delete('delete/:id')
     remove(@Param('id') id: string) {
         return this.insurerService.remove(id);
     }

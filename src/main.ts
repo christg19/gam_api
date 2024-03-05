@@ -4,12 +4,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({
-    allowedHeaders: '*',
-    origin: '*',
-  });
 
   const config = new DocumentBuilder()
     .setTitle('Insurers')

@@ -16,30 +16,23 @@ export class InsurersService {
     }
 
     async findOne(id: string): Promise<Insurer> {
-        return this.insurerModel.findOne({
+
+        const insurer = await this.insurerModel.findOne({
             where: {
                 id: id
             }
         });
-    }
 
-    private validateURL(url: string): Boolean {
-        const pattern = new RegExp('^(https?:\\/\\/)?' +
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
-            '((\\d{1,3}\\.){3}\\d{1,3}))' +
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
-            '(\\?[;&a-z\\d%_.~+=-]*)?' +
-            '(\\#[-a-z\\d_]*)?$', 'i');
-        return !!pattern.test(url);
+        if(!insurer){
+            throw new NotFoundException(`Insurer with ID ${id} not found`);
+        }
+
+        return insurer
     }
 
     async create(dto: CreateInsurerDto) {
         if (!dto) {
             throw new Error('DTO is undefined.');
-        }
-
-        if (!this.validateURL(dto.logo)) {
-            throw new NotFoundException(`URL ${dto.logo} is not valid.`);
         }
 
         return this.insurerModel.create(dto);
@@ -52,7 +45,8 @@ export class InsurersService {
             throw new NotFoundException(`Insurer with ID ${id} not found`);
         }
 
-        return this.insurerModel.findByIdAndUpdate(id, dto);
+        await this.insurerModel.findByIdAndUpdate(id, dto);
+        return dto;
     }
 
     async remove(id: string) {
